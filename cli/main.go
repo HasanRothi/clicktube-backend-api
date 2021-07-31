@@ -21,6 +21,7 @@ func main() {
 
 	server := gin.New()
 	server.Use(gin.Recovery())
+	server.Use(middlewares.Recover)
 	server.GET("/", route_handlers.Home)
 	server.GET("/guest", route_handlers.GuestHome("ROtHi"))
 	server.GET("/links", route_handlers.GetAllLink)
