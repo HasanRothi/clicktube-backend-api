@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"os"
 	"time"
@@ -21,10 +20,15 @@ func loadDotEnvVariable(key string) string {
 	}
 	return os.Getenv(key)
 }
+
+var Database string
+var DbClient *mongo.Client
+var DbCtx context.Context
+
 func Connect() {
 
 	/*
-	   Connect to my cluster
+	   Connect to cluster
 	*/
 	DB_USER := loadDotEnvVariable("DB_USER")
 	DB_PASSWORD := loadDotEnvVariable("DB_PASSWORD")
@@ -38,15 +42,11 @@ func Connect() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer client.Disconnect(ctx)
+	DbClient = client
+	DbCtx = ctx
+	// defer client.Disconnect(ctx)
 
-	/*
-	   List databases
-	*/
 	databases, err := client.ListDatabaseNames(ctx, bson.M{})
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(databases)
+	Database = databases[0]
 
 }
