@@ -17,7 +17,7 @@ func Recover(c *gin.Context) {
 			//Package general json return
 			//c.JSON(http.StatusOK, Result.Fail(errorToString(r)))
 			//Result.Fail is not the focus of this example, so use the following code instead
-			c.JSON(http.StatusOK, gin.H{
+			c.JSON(http.StatusInternalServerError, gin.H{
 				"code": "1",
 				"msg":  errorToString(r),
 				"data": nil,

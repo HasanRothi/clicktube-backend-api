@@ -25,5 +25,6 @@ func main() {
 	server.GET("/", route_handlers.Home)
 	server.GET("/guest", route_handlers.GuestHome("ROtHi"))
 	server.GET("/links", route_handlers.GetAllLink)
+	server.POST("/links", route_handlers.PostSingleLink)
 	server.Run()
 }

@@ -1,0 +1,9 @@
+POST http://localhost:8080/links HTTP/1.1
+content-type: application/json
+
+{
+    "link":"https://github.com/HasanRothi/Api-in-GoLang-Gin-Framework-/blob/master/main.go"
+}
+
+###
+GET http://localhost:8080/links HTTP/1.1
