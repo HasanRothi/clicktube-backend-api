@@ -1,9 +1,13 @@
+
 POST http://localhost:8080/links HTTP/1.1
 content-type: application/json
 
 {
-    "link":"https://github.com/HasanRothi/Api-in-GoLang-Gin-Framework-/blob/master/main.go"
+    "link":"https://blog.golang.org/defer-panic-and-recover"
 }
 
 ###
 GET http://localhost:8080/links HTTP/1.1
+
+###
+GET http://localhost:8080/link/2021-08-02-UITS-IT-9 HTTP/1.1

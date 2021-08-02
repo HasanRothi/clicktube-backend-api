@@ -11,10 +11,8 @@ import (
 // var DB string
 
 func require() {
-	middlewares.Logger()
+	// middlewares.Logger()
 	db.Connect()
-	// fmt.Println(db.DatabaseList[0])
-	// DB = db.DatabaseList[0]
 }
 func main() {
 	require()
@@ -25,6 +23,7 @@ func main() {
 	server.GET("/", route_handlers.Home)
 	server.GET("/guest", route_handlers.GuestHome("ROtHi"))
 	server.GET("/links", route_handlers.GetAllLink)
+	server.GET("/link/:id", route_handlers.GetSingleLink)
 	server.POST("/links", route_handlers.PostSingleLink)
 	server.Run()
 }

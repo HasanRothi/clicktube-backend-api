@@ -1,7 +1,12 @@
 package models
 
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
+
 type Link struct {
-	Link  string `bson:"link,omitempty"`
-	Views string `bson:"views"`
-	Short string `bson:"short"`
+	ID        primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
+	Link      string             `bson:"link,omitempty"`
+	Views     int                `bson:"views"`
+	shortLink string             `bson:"shortLink"`
 }
