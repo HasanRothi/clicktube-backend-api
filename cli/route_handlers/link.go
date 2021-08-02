@@ -1,6 +1,7 @@
 package route_handlers
 
 import (
+	"fmt"
 	"linkbook/cli/db"
 	"linkbook/cli/db/models"
 	"log"
@@ -46,6 +47,17 @@ func GetSingleLink(c *gin.Context) {
 	if err = filterCursor.All(db.DbCtx, &links); err != nil {
 		log.Fatal(err)
 	}
+	result, err := collection.UpdateOne(
+		db.DbCtx,
+		bson.M{"_id": links[0].ID},
+		bson.D{
+			{"$set", bson.D{{"views", links[0].Views + 1}}},
+		},
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(result)
 	c.Redirect(302, links[0].Link)
 }
 
@@ -66,6 +78,7 @@ func PostSingleLink(c *gin.Context) {
 	res, err := collection.InsertOne(db.DbCtx, bson.D{
 		{Key: "link", Value: linkData.Link},
 		{Key: "shortLink", Value: shortLink},
+		{Key: "date", Value: time.Now()},
 	})
 	if err != nil {
 		log.Fatal(err)

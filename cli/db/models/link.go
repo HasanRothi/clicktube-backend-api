@@ -1,6 +1,8 @@
 package models
 
 import (
+	"time"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -9,4 +11,5 @@ type Link struct {
 	Link      string             `bson:"link,omitempty"`
 	Views     int                `bson:"views"`
 	shortLink string             `bson:"shortLink"`
+	Date      time.Time          `bson:"date"`
 }
