@@ -10,6 +10,7 @@ type Link struct {
 	ID        primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
 	Link      string             `bson:"link,omitempty"`
 	Views     int                `bson:"views"`
-	shortLink string             `bson:"shortLink"`
+	ShortLink string             `bson:"shortLink"`
+	Published bool               `bson:"published"`
 	Date      time.Time          `bson:"date"`
 }

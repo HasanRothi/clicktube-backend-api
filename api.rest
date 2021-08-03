@@ -3,11 +3,26 @@ POST http://localhost:8080/links HTTP/1.1
 content-type: application/json
 
 {
-    "link":"https://blog.golang.org/defer-panic-and-recover"
+    "link":"https://www.youtube.com/watch?v=TChUsMTbnr0",
+    "published": false
+}
+
+###
+POST http://localhost:8080/link/published HTTP/1.1
+content-type: application/json
+
+{
+    "_id":"6108c5e4678628a408793bb1"
 }
 
 ###
 GET http://localhost:8080/links HTTP/1.1
 
 ###
-GET http://localhost:8080/link/2021-08-02-UITS-IT-9 HTTP/1.1
+GET http://localhost:8080/links/popular HTTP/1.1
+
+###
+GET http://localhost:8080/links/pending HTTP/1.1
+
+###
+GET http://localhost:8080/link/2021-08-02-UITS-IT-02 HTTP/1.1
