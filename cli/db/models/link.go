@@ -13,4 +13,5 @@ type Link struct {
 	ShortLink string             `bson:"shortLink"`
 	Published bool               `bson:"published"`
 	Date      time.Time          `bson:"date"`
+	UrlKey    string             `bson:"urlKey"`
 }

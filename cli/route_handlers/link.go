@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"linkbook/cli/db"
 	"linkbook/cli/db/models"
+	"linkbook/cli/services"
 	"log"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -52,7 +52,7 @@ func GetSingleLink(c *gin.Context) {
 	// 	panic(err)
 	// }
 	collection := db.DbClient.Database(db.Database).Collection("links")
-	filterCursor, err := collection.Find(db.DbCtx, bson.M{"shortLink": c.Param("id")})
+	filterCursor, err := collection.Find(db.DbCtx, bson.M{"shortLink": c.Param("id"), "published": true})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -60,18 +60,24 @@ func GetSingleLink(c *gin.Context) {
 	if err = filterCursor.All(db.DbCtx, &links); err != nil {
 		log.Fatal(err)
 	}
-	result, err := collection.UpdateOne(
-		db.DbCtx,
-		bson.M{"_id": links[0].ID},
-		bson.D{
-			{"$set", bson.D{{"views", links[0].Views + 1}}},
-		},
-	)
-	if err != nil {
-		log.Fatal(err)
+	// fmt.Println(len(links))
+	if len(links) == 0 {
+		panic("Url Not Found")
+	} else {
+		result, err := collection.UpdateOne(
+			db.DbCtx,
+			bson.M{"_id": links[0].ID},
+			bson.D{
+				{"$set", bson.D{{"views", links[0].Views + 1}}},
+			},
+		)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(result)
+		c.Redirect(302, links[0].Link)
 	}
-	fmt.Println(result)
-	c.Redirect(302, links[0].Link)
+
 }
 
 func GetPopularLinks(c *gin.Context) {
@@ -111,7 +117,8 @@ func PostSingleLink(c *gin.Context) {
 	var linkData models.Link
 	c.BindJSON(&linkData)
 	collection := db.DbClient.Database(db.Database).Collection("links")
-	cur, currErr := collection.Find(db.DbCtx, bson.M{"date": time.Now()})
+	urlKey := services.UrlKey()
+	cur, currErr := collection.Find(db.DbCtx, bson.M{"urlKey": urlKey})
 	if currErr != nil {
 		panic(currErr)
 	}
@@ -120,20 +127,19 @@ func PostSingleLink(c *gin.Context) {
 	if err := cur.All(db.DbCtx, &links); err != nil {
 		panic(err)
 	}
-	fmt.Println(len(links))
-	// shortLink := genarateSortLink(len(links))
-	// res, err := collection.InsertOne(db.DbCtx, bson.D{
-	// 	{Key: "link", Value: linkData.Link},
-	// 	{Key: "shortLink", Value: shortLink},
-	// 	{Key: "date", Value: time.Now()},
-	// 	{Key: "published", Value: linkData.Published},
-	// })
-	// if err != nil {
-	// 	log.Fatal(err)
-	// 	panic(err)
-	// }
-	// defer collection.Close()
-	c.JSON(http.StatusOK, gin.H{"Data": "lol"})
+	shortLink := services.GenarateSortLink(len(links))
+	res, err := collection.InsertOne(db.DbCtx, bson.D{
+		{Key: "link", Value: linkData.Link},
+		{Key: "shortLink", Value: shortLink},
+		{Key: "date", Value: time.Now()},
+		{Key: "published", Value: linkData.Published},
+		{Key: "urlKey", Value: urlKey},
+	})
+	if err != nil {
+		log.Fatal(err)
+		panic(err)
+	}
+	c.JSON(http.StatusOK, gin.H{"Data": res})
 }
 
 func PublishedSingleLink(c *gin.Context) {
@@ -144,44 +150,31 @@ func PublishedSingleLink(c *gin.Context) {
 		db.DbCtx,
 		bson.M{"_id": linkData.ID},
 		bson.D{
-			{"$set", bson.D{{"published", true}}},
+			{"$set", bson.D{{"published", linkData.Published}}},
 		},
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(result)
+
+	// fmt.Println("UpdateOne() result:", result)
+	// fmt.Println("UpdateOne() result TYPE:", reflect.TypeOf(result))
+	// fmt.Println("UpdateOne() result MatchedCount:", result.MatchedCount)
+	// fmt.Println("UpdateOne() result ModifiedCount:", result.ModifiedCount)
+	// fmt.Println("UpdateOne() result UpsertedCount:", result.UpsertedCount)
+	// fmt.Println("UpdateOne() result UpsertedID:", result.UpsertedID)
+	if linkData.Published == true && result.ModifiedCount == 1 {
+		filterCursor, err := collection.Find(db.DbCtx, bson.M{"_id": linkData.ID})
+		if err != nil {
+			log.Fatal(err)
+		}
+		var links []models.Link
+		if err = filterCursor.All(db.DbCtx, &links); err != nil {
+			log.Fatal(err)
+		}
+		services.SendMail("Rothi", "hasantechnologist@gmail.com", links[0].Link, links[0].ShortLink, time.Now())
+	}
 	c.JSON(200, gin.H{
 		"data": "Link Published",
 	})
 }
-func genarateSortLink(next int) string {
-	currentDate := time.Now()
-	dateString := currentDate.String()
-	dateSlice := dateString[0:10]
-	CAMPUS_CODE := "UITS"
-	DEPT_CODE := "IT"
-	nextLink := next + 1
-	shortUrl := dateSlice + "-" + CAMPUS_CODE + "-" + DEPT_CODE + "-" + strconv.Itoa(nextLink)
-	return shortUrl
-}
-
-// import gomail "gopkg.in/mail.v2"
-
-// m := gomail.NewMessage()
-// m.SetHeader("From", "hasanrothi99@gmail.com")
-// m.SetHeader("To", "hasanrothi@gmail.com")
-// m.SetAddressHeader("Cc", "dan@example.com", "Dan")
-// m.SetHeader("Subject", "Hello!")
-// m.SetBody("text/html", "Hello <b>Bob</b> and <i>Cora</i>!")
-// m.Attach("/home/Alex/lolcat.jpg")
-
-// d := gomail.NewDialer("smtp.example.com", 587, "hasanrothi99@gmail.com", "kemonaso99")
-// This is only needed when SSL/TLS certificate is not valid on server.
-// In production this should be set to false.
-//   d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
-
-// // Send the email to Bob, Cora and Dan.
-// if err := d.DialAndSend(m); err != nil {
-// 	panic(err)
-// }

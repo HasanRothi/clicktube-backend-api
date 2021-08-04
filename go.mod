@@ -14,5 +14,6 @@ require (
 	github.com/ugorji/go v1.2.6 // indirect
 	go.mongodb.org/mongo-driver v1.7.0
 	google.golang.org/protobuf v1.27.1 // indirect
+	gopkg.in/mail.v2 v2.3.1
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
