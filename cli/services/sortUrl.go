@@ -5,10 +5,8 @@ import (
 	"time"
 )
 
-func GenarateSortLink(next int) string {
+func GenarateSortLink(next int, CAMPUS_CODE string, DEPT_CODE string) string {
 	dateSlice := UrlKey()
-	CAMPUS_CODE := "UITS"
-	DEPT_CODE := "IT"
 	nextLink := next + 1
 	shortUrl := dateSlice + "-" + CAMPUS_CODE + "-" + DEPT_CODE + "-" + strconv.Itoa(nextLink)
 	return shortUrl

@@ -11,14 +11,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func GetAllLink(c *gin.Context) {
 
 	collection := db.DbClient.Database(db.Database).Collection("links")
-	opts := options.Find()
-	opts.SetSort(bson.D{{"date", -1}})
 	//pagination 1
 	// 	opts.SetSkip(0)
 	// opts.SetLimit(2)
@@ -29,17 +28,32 @@ func GetAllLink(c *gin.Context) {
 	//   Skip: skip,
 	//   Limit: limit
 	// }
-	cur, currErr := collection.Find(db.DbCtx, bson.D{}, opts)
-	if currErr != nil {
-		panic(currErr)
-	}
+	//v1
+	// opts := options.Find()
+	// opts.SetSort(bson.D{{"date", -1}})
+	// cur, currErr := collection.Find(db.DbCtx, bson.D{}, opts)
+	// if currErr != nil {
+	// 	panic(currErr)
+	// }
 
-	var links []models.Link
-	if err := cur.All(db.DbCtx, &links); err != nil {
+	// var links []models.Link
+	// if err := cur.All(db.DbCtx, &links); err != nil {
+	// 	panic(err)
+	// }
+	// fmt.Println(reflect.TypeOf(links))
+	//v2
+	lookupStage := bson.D{{"$lookup", bson.D{{"from", "users"}, {"localField", "author"}, {"foreignField", "_id"}, {"as", "author"}}}}
+	unwindStage := bson.D{{"$unwind", bson.D{{"path", "$author"}, {"preserveNullAndEmptyArrays", false}}}}
+
+	linkWithAuthorCur, err := collection.Aggregate(db.DbCtx, mongo.Pipeline{lookupStage, unwindStage})
+	if err != nil {
 		panic(err)
 	}
-	// fmt.Println(reflect.TypeOf(links))
-	defer cur.Close(db.DbCtx)
+	var links []bson.M
+	if err = linkWithAuthorCur.All(db.DbCtx, &links); err != nil {
+		panic(err)
+	}
+	defer linkWithAuthorCur.Close(db.DbCtx)
 	c.JSON(200, gin.H{
 		"data": links,
 	})
@@ -47,10 +61,6 @@ func GetAllLink(c *gin.Context) {
 
 func GetSingleLink(c *gin.Context) {
 
-	// linkID, err := primitive.ObjectIDFromHex(c.Param("id"))
-	// if err != nil {
-	// 	panic(err)
-	// }
 	collection := db.DbClient.Database(db.Database).Collection("links")
 	filterCursor, err := collection.Find(db.DbCtx, bson.M{"shortLink": c.Param("id"), "published": true})
 	if err != nil {
@@ -60,7 +70,6 @@ func GetSingleLink(c *gin.Context) {
 	if err = filterCursor.All(db.DbCtx, &links); err != nil {
 		log.Fatal(err)
 	}
-	// fmt.Println(len(links))
 	if len(links) == 0 {
 		panic("Url Not Found")
 	} else {
@@ -117,7 +126,11 @@ func PostSingleLink(c *gin.Context) {
 	var linkData models.Link
 	c.BindJSON(&linkData)
 	collection := db.DbClient.Database(db.Database).Collection("links")
-	urlKey := services.UrlKey()
+	author := LoadSingleUser(linkData.Author)
+	// fmt.Println(author[0].ID)
+	// fmt.Println(reflect.TypeOf(author[0].ID))
+	urlKey := services.UrlKey() + "-" + author[0].University + "-" + author[0].Dept
+	// fmt.Println(urlKey)
 	cur, currErr := collection.Find(db.DbCtx, bson.M{"urlKey": urlKey})
 	if currErr != nil {
 		panic(currErr)
@@ -127,13 +140,15 @@ func PostSingleLink(c *gin.Context) {
 	if err := cur.All(db.DbCtx, &links); err != nil {
 		panic(err)
 	}
-	shortLink := services.GenarateSortLink(len(links))
+	shortLink := services.GenarateSortLink(len(links), author[0].University, author[0].Dept)
+	// fmt.Println(shortLink)
 	res, err := collection.InsertOne(db.DbCtx, bson.D{
 		{Key: "link", Value: linkData.Link},
 		{Key: "shortLink", Value: shortLink},
 		{Key: "date", Value: time.Now()},
 		{Key: "published", Value: linkData.Published},
 		{Key: "urlKey", Value: urlKey},
+		{Key: "author", Value: author[0].ID},
 	})
 	if err != nil {
 		log.Fatal(err)

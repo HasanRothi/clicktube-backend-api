@@ -1,11 +1,13 @@
 
-POST http://localhost:8080/links HTTP/1.1
+POST http://localhost:8080/link HTTP/1.1
 content-type: application/json
 
 {
     "link":"https://github.com/dylang/node-rss/blob/master/lib/index.js",
-    "published": false
+    "published": false,
+    "author":"610b373c7794070c15c8a15d"
 }
+// author 610b3eda98c7eda9611722d1
 
 ###
 POST http://localhost:8080/link/published HTTP/1.1
@@ -27,3 +29,21 @@ GET http://localhost:8080/links/pending HTTP/1.1
 
 ###
 GET http://localhost:8080/link/2021-08-02-UITS-IT-02 HTTP/1.1
+
+###
+Get http://localhost:8080/users
+
+###
+GET http://localhost:8080/user/610b373c7794070c15c8a15d HTTP/1.1
+
+###
+POST http://localhost:8080/user HTTP/1.1
+content-type: application/json
+
+{
+    "gmail":"hasantechnologist@gmail.com",
+    "password":"hasanlink",
+    "university":"UITS",
+    "campusId":"16255011",
+    "dept":"CSE"
+}

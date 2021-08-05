@@ -14,4 +14,5 @@ type Link struct {
 	Published bool               `bson:"published"`
 	Date      time.Time          `bson:"date"`
 	UrlKey    string             `bson:"urlKey"`
+	Author    primitive.ObjectID `bson:"author"`
 }
