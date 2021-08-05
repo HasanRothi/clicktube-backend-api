@@ -23,9 +23,12 @@ GET http://localhost:8080/links HTTP/1.1
 
 ###
 GET http://localhost:8080/links/popular HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJnbWFpbCI6Imhhc2FudGVjaG5vbG9naXN0QGdtYWlsLmNvbSIsImV4cCI6MTYyODI0ODgxOCwiaWF0IjoxNjI4MTYyNDE4fQ._0fpwaON8uYcaxFdOCX9GjFLcCtxFQR63zqMwlkx8ds
 
 ###
 GET http://localhost:8080/links/pending HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJnbWFpbCI6Imhhc2FudGVjaG5vbG9naXN0QGdtYWlsLmNvbSIsImV4cCI6MTYyODI0ODgxOCwiaWF0IjoxNjI4MTYyNDE4fQ._0fpwaON8uYcaxFdOCX9GjFLcCtxFQR63zqMwlkx8ds
+
 
 ###
 GET http://localhost:8080/link/2021-08-02-UITS-IT-02 HTTP/1.1
@@ -33,9 +36,10 @@ GET http://localhost:8080/link/2021-08-02-UITS-IT-02 HTTP/1.1
 ###
 Get http://localhost:8080/users
 
+
 ###
 GET http://localhost:8080/user/610b373c7794070c15c8a15d HTTP/1.1
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJnbWFpbCI6Imhhc2FudGVjaG5vbG9naXN0QGdtYWlsLmNvbSIsImV4cCI6MTYyODI0ODk3MSwiaWF0IjoxNjI4MTYyNTcxfQ.axiK5ziAmXEMyuihKJxGk0EcypCDAmX6UsoOeSWxnho
 ###
 POST http://localhost:8080/user HTTP/1.1
 content-type: application/json
@@ -46,4 +50,13 @@ content-type: application/json
     "university":"UITS",
     "campusId":"16255011",
     "dept":"CSE"
+}
+
+###
+POST http://localhost:8080/credentials/login HTTP/1.1
+content-type: application/json
+
+{
+    "gmail":"hasantechnologist@gmail.com",
+    "password":"hasanlink"
 }

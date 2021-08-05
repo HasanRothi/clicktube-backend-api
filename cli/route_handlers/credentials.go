@@ -4,6 +4,7 @@ import (
 	"linkbook/cli/db"
 	"linkbook/cli/db/models"
 	"linkbook/cli/helpers"
+	"linkbook/cli/services"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -29,8 +30,11 @@ func Login(c *gin.Context) {
 	} else {
 		match := helpers.CheckPasswordHash(userData.Password, user[0].Password)
 		if match == true {
+			token := services.GenarateJwtToken(user[0].Gmail)
+			// c.Set("isAuth", true)
 			c.JSON(200, gin.H{
 				"message": "Logged in",
+				"token":   token,
 			})
 		} else {
 			c.JSON(500, gin.H{

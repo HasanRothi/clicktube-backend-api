@@ -12,4 +12,5 @@ type User struct {
 	University string             `bson:"university,omitempty"`
 	CampusID   string             `bson:"campusId,omitempty"`
 	Dept       string             `bson:"dept,omitempty"`
+	Role       string             `bson:"role,omitempty"`
 }
