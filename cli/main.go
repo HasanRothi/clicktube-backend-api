@@ -36,5 +36,8 @@ func main() {
 	server.GET("/user/:id", route_handlers.GetSingleUser)
 	server.POST("/user", route_handlers.PostSingleUser)
 
+	//Login routes
+	server.POST("/credentials/login", route_handlers.Login)
+
 	server.Run()
 }

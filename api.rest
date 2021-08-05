@@ -3,7 +3,7 @@ POST http://localhost:8080/link HTTP/1.1
 content-type: application/json
 
 {
-    "link":"https://github.com/dylang/node-rss/blob/master/lib/index.js",
+    "link":"https://github.com/dylang/node-rss",
     "published": false,
     "author":"610b373c7794070c15c8a15d"
 }
@@ -14,7 +14,7 @@ POST http://localhost:8080/link/published HTTP/1.1
 content-type: application/json
 
 {
-    "_id":"6109e08e9c47d4feabef7583",
+    "_id":"610b4acde5932e82c769786c",
     "published": true
 }
 
