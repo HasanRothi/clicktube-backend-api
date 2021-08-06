@@ -2,6 +2,7 @@ package middlewares
 
 import (
 	"log"
+	"os"
 	"time"
 
 	"github.com/getsentry/sentry-go"
@@ -9,7 +10,7 @@ import (
 
 func SentryInit() {
 	err := sentry.Init(sentry.ClientOptions{
-		Dsn: "https://3d429c316dae4194a3d498fb76de0d49@o517696.ingest.sentry.io/5895770",
+		Dsn: os.Getenv("SENTRY_DSN"),
 	})
 	if err != nil {
 		log.Fatalf("sentry.Init: %s", err)
