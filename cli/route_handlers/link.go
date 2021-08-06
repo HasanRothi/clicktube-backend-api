@@ -182,12 +182,15 @@ func PublishedSingleLink(c *gin.Context) {
 		filterCursor, err := collection.Find(db.DbCtx, bson.M{"_id": linkData.ID})
 		if err != nil {
 			log.Fatal(err)
+			panic("Link Not Found")
 		}
 		var links []models.Link
 		if err = filterCursor.All(db.DbCtx, &links); err != nil {
 			log.Fatal(err)
 		}
-		services.SendMail("Rothi", "hasantechnologist@gmail.com", links[0].Link, links[0].ShortLink, time.Now())
+		author := LoadSingleUser(linkData.Author)
+		fmt.Println(author)
+		services.SendMail(author[0].Name, author[0].Gmail, links[0].Link, links[0].ShortLink, time.Now())
 	}
 	c.JSON(200, gin.H{
 		"data": "Link Published",

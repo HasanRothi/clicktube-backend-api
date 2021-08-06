@@ -47,6 +47,7 @@ func LoadSingleUser(userID primitive.ObjectID) []models.User {
 	cur, err := collection.Find(db.DbCtx, bson.M{"_id": userID})
 	if err != nil {
 		log.Fatal(err)
+		panic("Author Not Found")
 	}
 	var user []models.User
 	if err = cur.All(db.DbCtx, &user); err != nil {

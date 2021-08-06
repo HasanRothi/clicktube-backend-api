@@ -14,12 +14,14 @@ POST http://localhost:8080/link/published HTTP/1.1
 content-type: application/json
 
 {
-    "_id":"610b4acde5932e82c769786c",
+    "_id":"610b4ae3e5932e82c769786d",
+    "author":"610b3eda98c7eda9611722d1",
     "published": true
 }
 
 ###
 GET http://localhost:8080/links HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJnbWFpbCI6Imhhc2FudGVjaG5vbG9naXN0QGdtYWlsLmNvbSIsImV4cCI6MTYyODMxMDA1MiwiaWF0IjoxNjI4MjIzNjUyfQ.hNrz5Y30_RZBaWU0vTkY5icplhgbcwp3M0EzicBiJo0
 
 ###
 GET http://localhost:8080/links/popular HTTP/1.1
@@ -27,7 +29,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJnbWFpbCI6Imhhc2Fud
 
 ###
 GET http://localhost:8080/links/pending HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJnbWFpbCI6Imhhc2FudGVjaG5vbG9naXN0QGdtYWlsLmNvbSIsImV4cCI6MTYyODI0ODgxOCwiaWF0IjoxNjI4MTYyNDE4fQ._0fpwaON8uYcaxFdOCX9GjFLcCtxFQR63zqMwlkx8ds
 
 
 ###
@@ -35,8 +36,7 @@ GET http://localhost:8080/link/2021-08-02-UITS-IT-02 HTTP/1.1
 
 ###
 Get http://localhost:8080/users
-
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJnbWFpbCI6InNhaGFqdWRkaW5raGFuMTAwQGdtYWlsLmNvbSIsImV4cCI6MTYyODMxMTgzOSwiaWF0IjoxNjI4MjI1NDM5fQ.m_4MX2fxZmGDU0UfdeZDBPtfmQwivpdfixIFJTGnOxk
 ###
 GET http://localhost:8080/user/610b373c7794070c15c8a15d HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJnbWFpbCI6Imhhc2FudGVjaG5vbG9naXN0QGdtYWlsLmNvbSIsImV4cCI6MTYyODI0ODk3MSwiaWF0IjoxNjI4MTYyNTcxfQ.axiK5ziAmXEMyuihKJxGk0EcypCDAmX6UsoOeSWxnho
@@ -57,6 +57,6 @@ POST http://localhost:8080/credentials/login HTTP/1.1
 content-type: application/json
 
 {
-    "gmail":"hasantechnologist@gmail.com",
-    "password":"hasanlink"
+    "gmail":"sahajuddinkhan100@gmail.com",
+    "password":"sajulink"
 }
