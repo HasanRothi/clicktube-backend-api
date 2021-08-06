@@ -5,12 +5,14 @@ import (
 	"linkbook/cli/middlewares"
 	"linkbook/cli/route_handlers"
 
+	sentrygin "github.com/getsentry/sentry-go/gin"
 	"github.com/gin-gonic/gin"
 )
 
 func require() {
 	// middlewares.Logger()
 	db.Connect()
+	middlewares.SentryInit()
 }
 func main() {
 	require()
@@ -18,6 +20,9 @@ func main() {
 	// var Level2 = []string{"Admin", "SuperAdmin"}
 	// var Level3 = []string{"SuperAdmin"}
 	server := gin.New()
+	server.Use(sentrygin.New(sentrygin.Options{
+		Repanic: true,
+	}))
 	server.Use(gin.Recovery())
 	server.Use(middlewares.Recover)
 

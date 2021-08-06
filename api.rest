@@ -14,7 +14,7 @@ POST http://localhost:8080/link/published HTTP/1.1
 content-type: application/json
 
 {
-    "_id":"610b4ae3e5932e82c769786d",
+    "_id":"610b4acde5932e82c769786c",
     "author":"610b3eda98c7eda9611722d1",
     "published": true
 }
@@ -60,3 +60,6 @@ content-type: application/json
     "gmail":"sahajuddinkhan100@gmail.com",
     "password":"sajulink"
 }
+
+###
+GET http://localhost:8080 HTTP/1.1
