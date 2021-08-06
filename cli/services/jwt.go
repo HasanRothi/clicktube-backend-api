@@ -2,12 +2,13 @@ package services
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
 )
 
-var JWT_SECRET = "ClickTube"
+var JWT_SECRET = os.Getenv("JWT_SECRET")
 
 type jwtCustomClaims struct {
 	Gmail string `json:"gmail"`
