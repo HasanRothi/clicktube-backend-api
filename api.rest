@@ -46,7 +46,7 @@ content-type: application/json
 
 {
     "gmail":"hasantechnologist@gmail.com",
-    "password":"hasanlink",
+    "password":"hasanlin",
     "university":"UITS",
     "campusId":"16255011",
     "dept":"CSE"

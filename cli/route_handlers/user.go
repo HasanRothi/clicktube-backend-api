@@ -59,6 +59,10 @@ func LoadSingleUser(userID primitive.ObjectID) []models.User {
 func PostSingleUser(c *gin.Context) {
 	var userData models.User
 	c.BindJSON(&userData)
+	error := helpers.SchemaValidator(userData)
+	if len(error) > 0 {
+		panic("User Validation Falied")
+	}
 	collection := db.DbClient.Database(db.Database).Collection("users")
 	cur, err := collection.Find(db.DbCtx, bson.M{"gmail": userData.Gmail})
 	if err != nil {

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"linkbook/cli/db"
 	"linkbook/cli/db/models"
+	"linkbook/cli/helpers"
 	"linkbook/cli/services"
 	"log"
 	"net/http"
@@ -125,6 +126,10 @@ func GetPendingLinks(c *gin.Context) {
 func PostSingleLink(c *gin.Context) {
 	var linkData models.Link
 	c.BindJSON(&linkData)
+	error := helpers.SchemaValidator(linkData)
+	if len(error) > 0 {
+		panic("Link Validation Falied")
+	}
 	collection := db.DbClient.Database(db.Database).Collection("links")
 	filterCursor, err := collection.Find(db.DbCtx, bson.M{"link": linkData.Link})
 	if err != nil {
