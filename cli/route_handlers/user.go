@@ -47,7 +47,7 @@ func LoadSingleUser(userID primitive.ObjectID) []models.User {
 	cur, err := collection.Find(db.DbCtx, bson.M{"_id": userID})
 	if err != nil {
 		log.Fatal(err)
-		panic("Author Not Found")
+		panic("Author | User Not Found")
 	}
 	var user []models.User
 	if err = cur.All(db.DbCtx, &user); err != nil {
@@ -60,18 +60,32 @@ func PostSingleUser(c *gin.Context) {
 	var userData models.User
 	c.BindJSON(&userData)
 	collection := db.DbClient.Database(db.Database).Collection("users")
-	hashPass, _ := helpers.HashPassword(userData.Password)
-	res, err := collection.InsertOne(db.DbCtx, bson.D{
-		{Key: "gmail", Value: userData.Gmail},
-		{Key: "name", Value: userData.Name},
-		{Key: "password", Value: hashPass},
-		{Key: "university", Value: userData.University},
-		{Key: "campusId", Value: userData.CampusID},
-		{Key: "dept", Value: userData.Dept},
-	})
+	cur, err := collection.Find(db.DbCtx, bson.M{"gmail": userData.Gmail})
 	if err != nil {
 		log.Fatal(err)
-		panic(err)
+		panic("Try Again")
 	}
-	c.JSON(http.StatusOK, gin.H{"Data": res})
+	var user []models.User
+	if err = cur.All(db.DbCtx, &user); err != nil {
+		log.Fatal(err)
+	}
+	if len(user) > 0 {
+		c.JSON(400, gin.H{"Data": "User Already Exist"})
+	} else {
+		hashPass, _ := helpers.HashPassword(userData.Password)
+		res, err := collection.InsertOne(db.DbCtx, bson.D{
+			{Key: "gmail", Value: userData.Gmail},
+			{Key: "name", Value: userData.Name},
+			{Key: "password", Value: hashPass},
+			{Key: "university", Value: userData.University},
+			{Key: "campusId", Value: userData.CampusID},
+			{Key: "dept", Value: userData.Dept},
+		})
+		if err != nil {
+			log.Fatal(err)
+			panic(err)
+		}
+		c.JSON(http.StatusOK, gin.H{"Data": res})
+	}
+
 }

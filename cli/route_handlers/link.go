@@ -126,35 +126,43 @@ func PostSingleLink(c *gin.Context) {
 	var linkData models.Link
 	c.BindJSON(&linkData)
 	collection := db.DbClient.Database(db.Database).Collection("links")
-	author := LoadSingleUser(linkData.Author)
-	// fmt.Println(author[0].ID)
-	// fmt.Println(reflect.TypeOf(author[0].ID))
-	urlKey := services.UrlKey() + "-" + author[0].University + "-" + author[0].Dept
-	// fmt.Println(urlKey)
-	cur, currErr := collection.Find(db.DbCtx, bson.M{"urlKey": urlKey})
-	if currErr != nil {
-		panic(currErr)
-	}
-
-	var links []models.Link
-	if err := cur.All(db.DbCtx, &links); err != nil {
-		panic(err)
-	}
-	shortLink := services.GenarateSortLink(len(links), author[0].University, author[0].Dept)
-	// fmt.Println(shortLink)
-	res, err := collection.InsertOne(db.DbCtx, bson.D{
-		{Key: "link", Value: linkData.Link},
-		{Key: "shortLink", Value: shortLink},
-		{Key: "date", Value: time.Now()},
-		{Key: "published", Value: linkData.Published},
-		{Key: "urlKey", Value: urlKey},
-		{Key: "author", Value: author[0].ID},
-	})
+	filterCursor, err := collection.Find(db.DbCtx, bson.M{"link": linkData.Link})
 	if err != nil {
 		log.Fatal(err)
-		panic(err)
+
 	}
-	c.JSON(http.StatusOK, gin.H{"Data": res})
+	var links []models.Link
+	if err = filterCursor.All(db.DbCtx, &links); err != nil {
+		log.Fatal(err)
+	}
+	if len(links) > 0 {
+		c.JSON(400, gin.H{"Data": "Link Already Exist"})
+	} else {
+		author := LoadSingleUser(linkData.Author)
+		urlKey := services.UrlKey() + "-" + author[0].University + "-" + author[0].Dept
+		cur, currErr := collection.Find(db.DbCtx, bson.M{"urlKey": urlKey})
+		if currErr != nil {
+			panic(currErr)
+		}
+
+		if err := cur.All(db.DbCtx, &links); err != nil {
+			panic(err)
+		}
+		shortLink := services.GenarateSortLink(len(links), author[0].University, author[0].Dept)
+		res, err := collection.InsertOne(db.DbCtx, bson.D{
+			{Key: "link", Value: linkData.Link},
+			{Key: "shortLink", Value: shortLink},
+			{Key: "date", Value: time.Now()},
+			{Key: "published", Value: linkData.Published},
+			{Key: "urlKey", Value: urlKey},
+			{Key: "author", Value: author[0].ID},
+		})
+		if err != nil {
+			log.Fatal(err)
+			panic(err)
+		}
+		c.JSON(http.StatusOK, gin.H{"Data": res})
+	}
 }
 
 func PublishedSingleLink(c *gin.Context) {
