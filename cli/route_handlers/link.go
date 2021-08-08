@@ -144,6 +144,7 @@ func PostSingleLink(c *gin.Context) {
 		c.JSON(400, gin.H{"Data": "Link Already Exist"})
 	} else {
 		author := LoadSingleUser(linkData.Author)
+		fmt.Println(author)
 		urlKey := services.UrlKey() + "-" + author[0].University + "-" + author[0].Dept
 		cur, currErr := collection.Find(db.DbCtx, bson.M{"urlKey": urlKey})
 		if currErr != nil {
@@ -154,6 +155,7 @@ func PostSingleLink(c *gin.Context) {
 			panic(err)
 		}
 		shortLink := services.GenarateSortLink(len(links), author[0].University, author[0].Dept)
+		fmt.Println(shortLink)
 		res, err := collection.InsertOne(db.DbCtx, bson.D{
 			{Key: "link", Value: linkData.Link},
 			{Key: "shortLink", Value: shortLink},
@@ -166,7 +168,18 @@ func PostSingleLink(c *gin.Context) {
 			log.Fatal(err)
 			panic(err)
 		}
-		c.JSON(http.StatusOK, gin.H{"Data": res})
+		collection := db.DbClient.Database(db.Database).Collection("users")
+		result, err := collection.UpdateOne(
+			db.DbCtx,
+			bson.M{"_id": linkData.Author},
+			bson.M{"$push": bson.M{"links": res.InsertedID}},
+		)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(result)
+		authorData := LoadSingleUser(linkData.Author)
+		c.JSON(http.StatusOK, gin.H{"Data": authorData})
 	}
 }
 

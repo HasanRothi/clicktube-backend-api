@@ -41,6 +41,7 @@ func main() {
 	//user routes
 	server.GET("/users", route_handlers.GetAllUser)
 	server.GET("/user/:id", route_handlers.GetSingleUser)
+	server.GET("/links/user/:id", route_handlers.GetSingleUserLinks)
 	server.POST("/user", route_handlers.PostSingleUser)
 
 	//Login routes

@@ -3,9 +3,9 @@ POST http://localhost:8080/link HTTP/1.1
 content-type: application/json
 
 {
-    "link":"https://github.com/dylang/node-rss",
+    "link":"https://play.golang.org/",
     "published": false,
-    "author":"610b373c7794070c15c8a15d"
+    "author":"610b3eda98c7eda9611722d1"
 }
 // author 610b3eda98c7eda9611722d1
 

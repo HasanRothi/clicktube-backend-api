@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func GetAllUser(c *gin.Context) {
@@ -42,7 +43,6 @@ func GetSingleUser(c *gin.Context) {
 
 }
 func LoadSingleUser(userID primitive.ObjectID) []models.User {
-
 	collection := db.DbClient.Database(db.Database).Collection("users")
 	cur, err := collection.Find(db.DbCtx, bson.M{"_id": userID})
 	if err != nil {
@@ -54,6 +54,22 @@ func LoadSingleUser(userID primitive.ObjectID) []models.User {
 		log.Fatal(err)
 	}
 	return user
+}
+func GetSingleUserLinks(c *gin.Context) {
+	collection := db.DbClient.Database(db.Database).Collection("users")
+	lookupStage := bson.D{{"$lookup", bson.D{{"from", "links"}, {"localField", "links"}, {"foreignField", "_id"}, {"as", "links"}}}}
+	unwindStage := bson.D{{"$unwind", bson.D{{"path", "$links"}, {"preserveNullAndEmptyArrays", false}}}}
+
+	linkWithAuthorCur, err := collection.Aggregate(db.DbCtx, mongo.Pipeline{lookupStage, unwindStage})
+	if err != nil {
+		panic(err)
+	}
+	var user []bson.M
+	if err = linkWithAuthorCur.All(db.DbCtx, &user); err != nil {
+		panic(err)
+	}
+	defer linkWithAuthorCur.Close(db.DbCtx)
+	c.JSON(200, gin.H{"Data": user})
 }
 
 func PostSingleUser(c *gin.Context) {
