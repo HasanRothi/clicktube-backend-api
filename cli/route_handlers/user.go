@@ -11,15 +11,22 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func GetAllUser(c *gin.Context) {
 
 	collection := db.DbClient.Database(db.Database).Collection("users")
-	cur, currErr := collection.Find(db.DbCtx, bson.D{})
+	opts := options.Find()
+	opts.SetProjection(bson.M{"name": 1, "gmail": 1, "university": 1, "campusId": 1, "dept": 1, "links": 1, "role": 1})
+	cur, currErr := collection.Find(db.DbCtx, bson.D{}, opts)
 	if currErr != nil {
 		panic(currErr)
 	}
+	// cur, currErr := collection.Find(db.DbCtx, bson.D{})
+	// if currErr != nil {
+	// 	panic(currErr)
+	// }
 
 	var users []models.User
 	if err := cur.All(db.DbCtx, &users); err != nil {
