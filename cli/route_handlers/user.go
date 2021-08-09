@@ -65,9 +65,14 @@ func LoadSingleUser(userID primitive.ObjectID) []models.User {
 func GetSingleUserLinks(c *gin.Context) {
 	collection := db.DbClient.Database(db.Database).Collection("users")
 	lookupStage := bson.D{{"$lookup", bson.D{{"from", "links"}, {"localField", "links"}, {"foreignField", "_id"}, {"as", "links"}}}}
-	unwindStage := bson.D{{"$unwind", bson.D{{"path", "$links"}, {"preserveNullAndEmptyArrays", false}}}}
-
-	linkWithAuthorCur, err := collection.Aggregate(db.DbCtx, mongo.Pipeline{lookupStage, unwindStage})
+	// unwindStage := bson.D{{"$unwind", bson.D{{"path", "$links"}, {"preserveNullAndEmptyArrays", false}}}}
+	pipeline := bson.D{{
+		"$project",
+		bson.D{
+			{"password", 0},
+		},
+	}}
+	linkWithAuthorCur, err := collection.Aggregate(db.DbCtx, mongo.Pipeline{pipeline, lookupStage})
 	if err != nil {
 		panic(err)
 	}

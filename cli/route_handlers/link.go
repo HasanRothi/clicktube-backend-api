@@ -44,9 +44,15 @@ func GetAllLink(c *gin.Context) {
 	// fmt.Println(reflect.TypeOf(links))
 	//v2
 	lookupStage := bson.D{{"$lookup", bson.D{{"from", "users"}, {"localField", "author"}, {"foreignField", "_id"}, {"as", "author"}}}}
-	unwindStage := bson.D{{"$unwind", bson.D{{"path", "$author"}, {"preserveNullAndEmptyArrays", false}}}}
+	// unwindStage := bson.D{{"$unwind", bson.D{{"path", "$author"}, {"preserveNullAndEmptyArrays", false}}}}
+	pipeline := bson.D{{
+		"$project",
+		bson.D{
+			{"urlKey", 0},
+		},
+	}}
 
-	linkWithAuthorCur, err := collection.Aggregate(db.DbCtx, mongo.Pipeline{lookupStage, unwindStage})
+	linkWithAuthorCur, err := collection.Aggregate(db.DbCtx, mongo.Pipeline{pipeline, lookupStage})
 	if err != nil {
 		panic(err)
 	}

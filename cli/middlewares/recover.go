@@ -3,7 +3,6 @@ package middlewares
 import (
 	"log"
 	"net/http"
-	"runtime/debug"
 
 	"github.com/getsentry/sentry-go"
 	sentrygin "github.com/getsentry/sentry-go/gin"
@@ -15,7 +14,7 @@ func Recover(c *gin.Context) {
 		if r := recover(); r != nil {
 			//Print error stack information
 			log.Printf("panic: %v\n", r)
-			debug.PrintStack()
+			// debug.PrintStack()
 			//Package general json return
 			//c.JSON(http.StatusOK, Result.Fail(errorToString(r)))
 			//Result.Fail is not the focus of this example, so use the following code instead
