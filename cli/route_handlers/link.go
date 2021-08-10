@@ -136,6 +136,10 @@ func PostSingleLink(c *gin.Context) {
 	if len(error) > 0 {
 		panic("Link Validation Falied")
 	}
+	urlValid := helpers.UrlValidator(linkData.Link)
+	if urlValid == false {
+		panic("Link is not valid")
+	}
 	collection := db.DbClient.Database(db.Database).Collection("links")
 	filterCursor, err := collection.Find(db.DbCtx, bson.M{"link": linkData.Link})
 	if err != nil {
@@ -150,7 +154,7 @@ func PostSingleLink(c *gin.Context) {
 		c.JSON(400, gin.H{"Data": "Link Already Exist"})
 	} else {
 		author := LoadSingleUser(linkData.Author)
-		fmt.Println(author)
+		// fmt.Println(author)
 		urlKey := services.UrlKey() + "-" + author[0].University + "-" + author[0].Dept
 		cur, currErr := collection.Find(db.DbCtx, bson.M{"urlKey": urlKey})
 		if currErr != nil {
@@ -161,7 +165,7 @@ func PostSingleLink(c *gin.Context) {
 			panic(err)
 		}
 		shortLink := services.GenarateSortLink(len(links), author[0].University, author[0].Dept)
-		fmt.Println(shortLink)
+		// fmt.Println(shortLink)
 		res, err := collection.InsertOne(db.DbCtx, bson.D{
 			{Key: "link", Value: linkData.Link},
 			{Key: "shortLink", Value: shortLink},
@@ -175,7 +179,7 @@ func PostSingleLink(c *gin.Context) {
 			panic(err)
 		}
 		collection := db.DbClient.Database(db.Database).Collection("users")
-		result, err := collection.UpdateOne(
+		_, err = collection.UpdateOne(
 			db.DbCtx,
 			bson.M{"_id": linkData.Author},
 			bson.M{"$push": bson.M{"links": res.InsertedID}},
@@ -183,9 +187,19 @@ func PostSingleLink(c *gin.Context) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println(result)
-		authorData := LoadSingleUser(linkData.Author)
-		c.JSON(http.StatusOK, gin.H{"Data": authorData})
+		// fmt.Println(result)
+		// authorData := LoadSingleUser(linkData.Author)
+		collection = db.DbClient.Database(db.Database).Collection("links")
+		filterLink, err := collection.Find(db.DbCtx, bson.M{"_id": res.InsertedID})
+		if err != nil {
+			log.Fatal(err)
+
+		}
+		var link []models.Link
+		if err = filterLink.All(db.DbCtx, &link); err != nil {
+			log.Fatal(err)
+		}
+		c.JSON(http.StatusOK, gin.H{"Data": link})
 	}
 }
 
