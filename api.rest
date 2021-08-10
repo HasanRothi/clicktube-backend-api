@@ -38,7 +38,7 @@ GET http://localhost:8080/link/2021-08-02-UITS-IT-02 HTTP/1.1
 Get http://localhost:8080/users
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJnbWFpbCI6InNhaGFqdWRkaW5raGFuMTAwQGdtYWlsLmNvbSIsImV4cCI6MTYyODMxMTgzOSwiaWF0IjoxNjI4MjI1NDM5fQ.m_4MX2fxZmGDU0UfdeZDBPtfmQwivpdfixIFJTGnOxk
 ###
-GET http://localhost:8080/links/user/610b373c7794070c15c8a15d HTTP/1.1
+GET http://localhost:8080/user/610b3eda98c7eda9611722d1 HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJnbWFpbCI6Imhhc2FudGVjaG5vbG9naXN0QGdtYWlsLmNvbSIsImV4cCI6MTYyODI0ODk3MSwiaWF0IjoxNjI4MTYyNTcxfQ.axiK5ziAmXEMyuihKJxGk0EcypCDAmX6UsoOeSWxnho
 ###
 POST http://localhost:8080/user HTTP/1.1

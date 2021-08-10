@@ -1,6 +1,7 @@
 package route_handlers
 
 import (
+	"fmt"
 	"linkbook/cli/db"
 	"linkbook/cli/db/models"
 	"linkbook/cli/helpers"
@@ -62,16 +63,20 @@ func LoadSingleUser(userID primitive.ObjectID) []models.User {
 	}
 	return user
 }
-func GetSingleUserLinks(c *gin.Context) {
+func SingleUserLinks(c *gin.Context) {
+	userID, err := primitive.ObjectIDFromHex(c.Param("id"))
+
+	fmt.Println(userID)
 	collection := db.DbClient.Database(db.Database).Collection("users")
 	lookupStage := bson.D{{"$lookup", bson.D{{"from", "links"}, {"localField", "links"}, {"foreignField", "_id"}, {"as", "links"}}}}
-	// unwindStage := bson.D{{"$unwind", bson.D{{"path", "$links"}, {"preserveNullAndEmptyArrays", false}}}}
+	// unwindStage := bson.D{{"$unwind", bson.D{{"path", "$author"}, {"preserveNullAndEmptyArrays", false}}}}
 	pipeline := bson.D{{
-		"$project",
+		"$match",
 		bson.D{
-			{"password", 0},
+			{"_id", userID},
 		},
 	}}
+
 	linkWithAuthorCur, err := collection.Aggregate(db.DbCtx, mongo.Pipeline{pipeline, lookupStage})
 	if err != nil {
 		panic(err)
@@ -80,9 +85,32 @@ func GetSingleUserLinks(c *gin.Context) {
 	if err = linkWithAuthorCur.All(db.DbCtx, &user); err != nil {
 		panic(err)
 	}
-	defer linkWithAuthorCur.Close(db.DbCtx)
-	c.JSON(200, gin.H{"Data": user})
+	c.JSON(200, gin.H{
+		"data": user,
+	})
 }
+
+// func GetSingleUserLinks(c *gin.Context) {
+// 	collection := db.DbClient.Database(db.Database).Collection("users")
+// 	lookupStage := bson.D{{"$lookup", bson.D{{"from", "links"}, {"localField", "links"}, {"foreignField", "_id"}, {"as", "links"}}}}
+// 	// unwindStage := bson.D{{"$unwind", bson.D{{"path", "$links"}, {"preserveNullAndEmptyArrays", false}}}}
+// 	pipeline := bson.D{{
+// 		"$project",
+// 		bson.D{
+// 			{"password", 0},
+// 		},
+// 	}}
+// 	linkWithAuthorCur, err := collection.Aggregate(db.DbCtx, mongo.Pipeline{pipeline, lookupStage})
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	var user []bson.M
+// 	if err = linkWithAuthorCur.All(db.DbCtx, &user); err != nil {
+// 		panic(err)
+// 	}
+// 	defer linkWithAuthorCur.Close(db.DbCtx)
+// 	c.JSON(200, gin.H{"Data": user})
+// }
 
 func PostSingleUser(c *gin.Context) {
 	var userData models.User
