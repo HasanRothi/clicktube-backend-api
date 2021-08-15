@@ -67,31 +67,39 @@ func GetAllLink(c *gin.Context) {
 }
 
 func GetSingleLink(c *gin.Context) {
-
-	collection := db.DbClient.Database(db.Database).Collection("links")
-	filterCursor, err := collection.Find(db.DbCtx, bson.M{"shortLink": c.Param("id"), "published": true})
+	val, err := db.DbRedisClient.Get(c.Param("id")).Result()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
-	var links []models.Link
-	if err = filterCursor.All(db.DbCtx, &links); err != nil {
-		log.Fatal(err)
-	}
-	if len(links) == 0 {
-		panic("Url Not Found")
+	if len(val) > 0 {
+		c.Redirect(302, val)
 	} else {
-		result, err := collection.UpdateOne(
-			db.DbCtx,
-			bson.M{"_id": links[0].ID},
-			bson.D{
-				{"$set", bson.D{{"views", links[0].Views + 1}}},
-			},
-		)
+		collection := db.DbClient.Database(db.Database).Collection("links")
+		filterCursor, err := collection.Find(db.DbCtx, bson.M{"shortLink": c.Param("id"), "published": true})
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println(result)
-		c.Redirect(302, links[0].Link)
+		var links []models.Link
+		if err = filterCursor.All(db.DbCtx, &links); err != nil {
+			log.Fatal(err)
+		}
+		if len(links) == 0 {
+			panic("Url Not Found")
+		} else {
+			result, err := collection.UpdateOne(
+				db.DbCtx,
+				bson.M{"_id": links[0].ID},
+				bson.D{
+					{"$set", bson.D{{"views", links[0].Views + 1}}},
+				},
+			)
+			if err != nil {
+				log.Fatal(err)
+			}
+			fmt.Println(result)
+			err = db.DbRedisClient.Set(c.Param("id"), links[0].Link, 0).Err()
+			c.Redirect(302, links[0].Link)
+		}
 	}
 
 }

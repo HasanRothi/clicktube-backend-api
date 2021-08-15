@@ -15,6 +15,7 @@ import (
 func require() {
 	// middlewares.Logger()
 	db.Connect()
+	db.RedisConnect()
 	middlewares.SentryInit()
 }
 func main() {
