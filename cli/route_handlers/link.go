@@ -1,6 +1,7 @@
 package route_handlers
 
 import (
+	// "encoding/json"
 	"fmt"
 	"linkbook/cli/db"
 	"linkbook/cli/db/models"
@@ -8,6 +9,10 @@ import (
 	"linkbook/cli/services"
 	"log"
 	"net/http"
+
+	// "net/url"
+	// "os"
+	// "strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -98,6 +103,32 @@ func GetSingleLink(c *gin.Context) {
 			}
 			fmt.Println(result)
 			err = db.DbRedisClient.Set(c.Param("id"), links[0].Link, 0).Err()
+			// accountSid := os.Getenv("TWILO_SID")
+			// authToken := os.Getenv("TWILO_TOKEN")
+			// a := "https://api.twilio.com/2010-04-01/Accounts/"
+			// d := "/Messages.json"
+			// urlStr := a + accountSid + d
+			// msgData := url.Values{}
+			// msgData.Set("To", os.Getenv("TO_PHONE_NUMBER"))
+			// msgData.Set("From", os.Getenv("TWILIO_PHONE_NUMBER"))
+			// msgData.Set("Body", "Hi from Golang,Rothi")
+			// msgDataReader := *strings.NewReader(msgData.Encode())
+			// client := &http.Client{}
+			// req, _ := http.NewRequest("POST", urlStr, &msgDataReader)
+			// req.SetBasicAuth(accountSid, authToken)
+			// req.Header.Add("Accept", "application/json")
+			// req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+			// resp, _ := client.Do(req)
+			// if resp.StatusCode >= 200 && resp.StatusCode < 300 {
+			// 	var data map[string]interface{}
+			// 	decoder := json.NewDecoder(resp.Body)
+			// 	err := decoder.Decode(&data)
+			// 	if err == nil {
+			// 		fmt.Println(data["sid"])
+			// 	}
+			// } else {
+			// 	fmt.Println(resp.Status)
+			// }
 			c.Redirect(302, links[0].Link)
 		}
 	}

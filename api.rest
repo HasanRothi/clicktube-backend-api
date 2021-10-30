@@ -32,7 +32,7 @@ GET http://localhost:8080/links/pending HTTP/1.1
 
 
 ###
-GET http://localhost:8080/link/2021-08-02-UITS-IT-02 HTTP/1.1
+GET http://localhost:8080/link/2021-08-02-UITS-IT-9 HTTP/1.1
 
 ###
 Get http://localhost:8080/users
