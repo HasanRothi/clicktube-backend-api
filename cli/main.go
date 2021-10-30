@@ -29,14 +29,14 @@ func main() {
 	}))
 	server.Use(gin.Recovery())
 	server.Use(middlewares.Recover)
-	server.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{os.Getenv("UI")},
-		AllowMethods:     []string{"GET", "POST"},
-		AllowHeaders:     []string{"Origin"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
-		MaxAge:           12 * time.Hour,
-	}))
+// 	server.Use(cors.New(cors.Config{
+// 		AllowOrigins:     []string{os.Getenv("UI")},
+// 		AllowMethods:     []string{"GET", "POST"},
+// 		AllowHeaders:     []string{"Origin"},
+// 		ExposeHeaders:    []string{"Content-Length"},
+// 		AllowCredentials: true,
+// 		MaxAge:           12 * time.Hour,
+// 	}))
 
 	//Welcome routes
 	server.GET("/", route_handlers.Home)
