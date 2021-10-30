@@ -4,7 +4,7 @@ import (
 	"linkbook/cli/db"
 	"linkbook/cli/middlewares"
 	"linkbook/cli/route_handlers"
-	"log"
+// 	"log"
 // 	"os"
 // 	"time"
 
