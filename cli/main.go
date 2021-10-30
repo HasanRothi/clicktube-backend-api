@@ -40,7 +40,7 @@ func main() {
 
 	//Welcome routes
 	server.GET("/", route_handlers.Home)
-	server.GET("/guest", route_handlers.GuestHome("ROtHi"))
+	server.GET("/guest", route_handlers.GuestHome("Guest"))
 
 	//link routes
 	server.GET("/links", route_handlers.GetAllLink)
