@@ -4,14 +4,14 @@ import (
 	"linkbook/cli/db"
 	"linkbook/cli/middlewares"
 	"linkbook/cli/route_handlers"
-	"log"
-	"os"
-	"time"
+// 	"log"
+// 	"os"
+// 	"time"
 
 	sentrygin "github.com/getsentry/sentry-go/gin"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
+// 	"github.com/joho/godotenv"
 )
 
 func require() {
@@ -20,14 +20,14 @@ func require() {
 	db.RedisConnect()
 	middlewares.SentryInit()
 }
-func loadDotEnvVariable(key string) string {
+// func loadDotEnvVariable(key string) string {
 
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatalf("Error loading .env file")
-	}
-	return os.Getenv(key)
-}
+// 	err := godotenv.Load(".env")
+// 	if err != nil {
+// 		log.Fatalf("Error loading .env file")
+// 	}
+// 	return os.Getenv(key)
+// }
 func main() {
 	require()
 	// var Level1 = []string{"User", "Admin", "SuperAdmin"}
@@ -39,14 +39,7 @@ func main() {
 	}))
 	server.Use(gin.Recovery())
 	server.Use(middlewares.Recover)
-	server.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{loadDotEnvVariable("UI")},
-		AllowMethods:     []string{"GET", "POST"},
-		AllowHeaders:     []string{"Origin"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
-		MaxAge:           12 * time.Hour,
-	}))
+	server.Use(cors.Default())
 
 	//Welcome routes
 	server.GET("/", route_handlers.Home)
