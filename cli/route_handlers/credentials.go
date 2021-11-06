@@ -34,6 +34,7 @@ func Login(c *gin.Context) {
 			// c.Set("isAuth", true)
 			c.JSON(200, gin.H{
 				"message": "Logged in",
+				"id":      user[0].ID,
 				"token":   token,
 			})
 		} else {
