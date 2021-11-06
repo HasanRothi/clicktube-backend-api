@@ -33,9 +33,11 @@ func Login(c *gin.Context) {
 			token := services.GenarateJwtToken(user[0].Gmail)
 			// c.Set("isAuth", true)
 			c.JSON(200, gin.H{
-				"message": "Logged in",
-				"id":      user[0].ID,
-				"token":   token,
+				"message":  "Logged in",
+				"id":       user[0].ID,
+				"gmail":    user[0].Gmail,
+				"CampusId": user[0].CampusID,
+				"token":    token,
 			})
 		} else {
 			c.JSON(500, gin.H{
