@@ -133,6 +133,7 @@ func PostSingleUser(c *gin.Context) {
 		c.JSON(400, gin.H{"Data": "User Already Exist"})
 	} else {
 		hashPass, _ := helpers.HashPassword(userData.Password)
+		fmt.Println(userData)
 		res, err := collection.InsertOne(db.DbCtx, bson.D{
 			{Key: "gmail", Value: userData.Gmail},
 			{Key: "name", Value: userData.Name},
@@ -140,6 +141,7 @@ func PostSingleUser(c *gin.Context) {
 			{Key: "university", Value: userData.University},
 			{Key: "campusId", Value: userData.CampusID},
 			{Key: "dept", Value: userData.Dept},
+			{Key: "role", Value: userData.Role},
 		})
 		if err != nil {
 			log.Fatal(err)

@@ -18,7 +18,6 @@ func SchemaValidator(schema interface{}) []string {
 		}
 
 		for _, err := range err.(validator.ValidationErrors) {
-
 			error = append(error, err.Field()+" "+err.Tag()+" "+err.Param())
 		}
 	}

@@ -38,6 +38,7 @@ func Login(c *gin.Context) {
 				"gmail":    user[0].Gmail,
 				"CampusId": user[0].CampusID,
 				"token":    token,
+				"Role":     user[0].Role,
 			})
 		} else {
 			c.JSON(500, gin.H{
