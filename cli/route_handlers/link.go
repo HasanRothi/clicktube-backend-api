@@ -17,7 +17,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -48,24 +47,35 @@ func GetAllLink(c *gin.Context) {
 	// }
 	// fmt.Println(reflect.TypeOf(links))
 	//v2
-	lookupStage := bson.D{{"$lookup", bson.D{{"from", "users"}, {"localField", "author"}, {"foreignField", "_id"}, {"as", "author"}}}}
+	// lookupStage := bson.D{{"$lookup", bson.D{{"from", "users"}, {"localField", "author"}, {"foreignField", "_id"}, {"as", "author"}}}}
 	// unwindStage := bson.D{{"$unwind", bson.D{{"path", "$author"}, {"preserveNullAndEmptyArrays", false}}}}
-	pipeline := bson.D{{
-		"$project",
-		bson.D{
-			{"urlKey", 0},
-		},
-	}}
+	// pipeline := bson.D{{
+	// 	"$project",
+	// 	bson.D{
+	// 		{"pubslihed", true},
+	// 	},
+	// }}
 
-	linkWithAuthorCur, err := collection.Aggregate(db.DbCtx, mongo.Pipeline{pipeline, lookupStage})
+	// linkWithAuthorCur, err := collection.Aggregate(db.DbCtx, mongo.Pipeline{pipeline, lookupStage})
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// var links []bson.M
+	// if err = linkWithAuthorCur.All(db.DbCtx, &links); err != nil {
+	// 	panic(err)
+	// }
+	// defer linkWithAuthorCur.Close(db.DbCtx)
+	// c.JSON(200, gin.H{
+	// 	"data": links,
+	// })
+	sortCursor, err := collection.Find(db.DbCtx, bson.M{"published": true})
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	var links []bson.M
-	if err = linkWithAuthorCur.All(db.DbCtx, &links); err != nil {
-		panic(err)
+	if err = sortCursor.All(db.DbCtx, &links); err != nil {
+		log.Fatal(err)
 	}
-	defer linkWithAuthorCur.Close(db.DbCtx)
 	c.JSON(200, gin.H{
 		"data": links,
 	})
@@ -207,6 +217,8 @@ func PostSingleLink(c *gin.Context) {
 		// fmt.Println(shortLink)
 		res, err := collection.InsertOne(db.DbCtx, bson.D{
 			{Key: "link", Value: linkData.Link},
+			{Key: "title", Value: linkData.Title},
+			{Key: "description", Value: linkData.Description},
 			{Key: "shortLink", Value: shortLink},
 			{Key: "date", Value: time.Now()},
 			{Key: "published", Value: linkData.Published},

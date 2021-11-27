@@ -3,9 +3,11 @@ POST http://localhost:8080/link HTTP/1.1
 content-type: application/json
 
 {
-    "link":"https://stackoverflow.com/questions/68680512/missing-keymaps-windows-proper-redo-flutter",
+    "link":"https://www.youtube.com/",
     "published": false,
-    "author":"610b3eda98c7eda9611722d1"
+    "author":"610b3eda98c7eda9611722d1",
+    "title": "youube",
+    "description": "tube"
 }
 // author 610b3eda98c7eda9611722d1
 
@@ -16,7 +18,7 @@ content-type: application/json
 {
     "_id":"610b4acde5932e82c769786c",
     "author":"610b3eda98c7eda9611722d1",
-    "published": true
+    "published": true,
 }
 
 ###
