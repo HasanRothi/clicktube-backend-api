@@ -17,4 +17,5 @@ type Link struct {
 	Date        time.Time          `bson:"date"`
 	UrlKey      string             `bson:"urlKey"`
 	Author      primitive.ObjectID `bson:"author" validate:"required"`
+	Category    string             `bson:"category"`
 }

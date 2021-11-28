@@ -3,11 +3,12 @@ POST http://localhost:8080/link HTTP/1.1
 content-type: application/json
 
 {
-    "link":"https://www.youtube.com/",
+    "link":"https://go.dev/tour/welcome/5",
     "published": false,
     "author":"610b3eda98c7eda9611722d1",
-    "title": "youube",
-    "description": "tube"
+    "title": "Golang playground",
+    "description": "Practice golang..",
+    "category": "Programming"
 }
 // author 610b3eda98c7eda9611722d1
 
@@ -22,7 +23,15 @@ content-type: application/json
 }
 
 ###
-GET http://localhost:8080/links HTTP/1.1
+POST http://localhost:8080/category HTTP/1.1
+content-type: application/json
+
+{
+    "name": "test cat pro"
+}
+
+###
+GET http://localhost:8080/category HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJnbWFpbCI6Imhhc2FudGVjaG5vbG9naXN0QGdtYWlsLmNvbSIsImV4cCI6MTYyODMxMDA1MiwiaWF0IjoxNjI4MjIzNjUyfQ.hNrz5Y30_RZBaWU0vTkY5icplhgbcwp3M0EzicBiJo0
 
 ###

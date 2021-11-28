@@ -4,14 +4,15 @@ import (
 	"linkbook/cli/db"
 	"linkbook/cli/middlewares"
 	"linkbook/cli/route_handlers"
-// 	"log"
-// 	"os"
-// 	"time"
+
+	// 	"log"
+	// 	"os"
+	// 	"time"
 
 	sentrygin "github.com/getsentry/sentry-go/gin"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-// 	"github.com/joho/godotenv"
+	// 	"github.com/joho/godotenv"
 )
 
 func require() {
@@ -20,6 +21,7 @@ func require() {
 	db.RedisConnect()
 	middlewares.SentryInit()
 }
+
 // func loadDotEnvVariable(key string) string {
 
 // 	err := godotenv.Load(".env")
@@ -58,6 +60,10 @@ func main() {
 	server.GET("/user/:id", route_handlers.SingleUserLinks)
 	// server.GET("/links/user/:id", route_handlers.GetSingleUserLinks)/
 	server.POST("/user", route_handlers.PostSingleUser)
+
+	//Categpry routes
+	server.GET("/category", route_handlers.GetAllCategory)
+	server.POST("/category", route_handlers.AddCategory)
 
 	//Login routes
 	server.POST("/credentials/login", route_handlers.Login)

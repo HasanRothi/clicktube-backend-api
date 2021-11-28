@@ -214,7 +214,7 @@ func PostSingleLink(c *gin.Context) {
 			panic(err)
 		}
 		shortLink := services.GenarateSortLink(len(links), author[0].University, author[0].Dept)
-		// fmt.Println(shortLink)
+		// fmt.Println(linkData)
 		res, err := collection.InsertOne(db.DbCtx, bson.D{
 			{Key: "link", Value: linkData.Link},
 			{Key: "title", Value: linkData.Title},
@@ -224,6 +224,7 @@ func PostSingleLink(c *gin.Context) {
 			{Key: "published", Value: linkData.Published},
 			{Key: "urlKey", Value: urlKey},
 			{Key: "author", Value: author[0].ID},
+			{Key: "category", Value: linkData.Category},
 		})
 		if err != nil {
 			log.Fatal(err)
