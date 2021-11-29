@@ -64,6 +64,7 @@ func main() {
 	//Categpry routes
 	server.GET("/category", route_handlers.GetAllCategory)
 	server.POST("/category", route_handlers.AddCategory)
+	server.GET("/category/links/:category", route_handlers.GetCategoryLinks)
 
 	//Login routes
 	server.POST("/credentials/login", route_handlers.Login)

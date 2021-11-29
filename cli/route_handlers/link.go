@@ -144,7 +144,20 @@ func GetSingleLink(c *gin.Context) {
 	}
 
 }
-
+func GetCategoryLinks(c *gin.Context) {
+	collection := db.DbClient.Database(db.Database).Collection("links")
+	filterCursor, err := collection.Find(db.DbCtx, bson.M{"category": c.Param("category"), "published": true})
+	if err != nil {
+		log.Fatal(err)
+	}
+	var links []models.Link
+	if err = filterCursor.All(db.DbCtx, &links); err != nil {
+		log.Fatal(err)
+	}
+	c.JSON(200, gin.H{
+		"data": links,
+	})
+}
 func GetPopularLinks(c *gin.Context) {
 
 	collection := db.DbClient.Database(db.Database).Collection("links")
