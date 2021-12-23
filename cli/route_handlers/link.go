@@ -68,7 +68,9 @@ func GetAllLink(c *gin.Context) {
 	// c.JSON(200, gin.H{
 	// 	"data": links,
 	// })
-	sortCursor, err := collection.Find(db.DbCtx, bson.M{"published": true})
+	opts := options.Find()
+	opts.SetSort(bson.D{{"date", -1}})
+	sortCursor, err := collection.Find(db.DbCtx, bson.M{"published": true}, opts)
 	if err != nil {
 		log.Fatal(err)
 	}
