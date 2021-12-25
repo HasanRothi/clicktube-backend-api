@@ -42,7 +42,7 @@ func Login(c *gin.Context) {
 			})
 		} else {
 			c.JSON(500, gin.H{
-				"message": "try Again",
+				"message": "Try Again",
 			})
 		}
 
